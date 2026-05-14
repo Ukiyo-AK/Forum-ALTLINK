@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Регистрация | Форум ALTLINK{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-xl-8">
+    <div class="account-card rounded-4 p-4 p-md-5">
+      <div class="row g-4 align-items-start">
+        <div class="col-md-5">
+          <h1 class="h3 page-title mb-3">Создание аккаунта</h1>
+          <div class="account-copy small mb-3">Заполните поля ниже</div>
+          <img src="{{ url_for('media_file', filename=default_avatar_filename) }}" class="img-fluid rounded-4" alt="Аватар по умолчанию">
+        </div>
+
+        <div class="col-md-7">
+          {% if errors %}
+          <div class="alert forum-alert forum-alert-warning" role="alert">
+            <ul class="mb-0">
+              {% for error in errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+
+          <form method="post" enctype="multipart/form-data" class="d-grid gap-3">
+            <div>
+              <label class="form-label" for="nickname">Никнейм</label>
+              <input class="form-control forum-form-control" id="nickname" name="nickname" maxlength="32" value="{{ form_data.nickname }}" required>
+            </div>
+
+            <div>
+              <label class="form-label" for="password">Пароль</label>
+              <input class="form-control forum-form-control" id="password" name="password" type="password" minlength="6" required>
+            </div>
+
+            <div>
+              <label class="form-label" for="password_repeat">Повторите пароль</label>
+              <input class="form-control forum-form-control" id="password_repeat" name="password_repeat" type="password" minlength="6" required>
+            </div>
+
+            <div>
+              <label class="form-label" for="gender">Пол</label>
+              <select class="form-select forum-form-select" id="gender" name="gender" required>
+                <option value="" {% if not form_data.gender %}selected{% endif %} disabled>Выберите вариант</option>
+                {% for value, label in gender_labels.items() %}
+                <option value="{{ value }}" {% if form_data.gender == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label" for="avatar">Аватарка</label>
+              <input class="form-control forum-form-control" id="avatar" name="avatar" type="file" accept=".png,.jpg,.jpeg,.gif,.webp,.svg">
+              <div class="form-text">Поддерживаются PNG, JPG, GIF, WEBP и SVG. Максимум 3 МБ.</div>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+              <button class="btn forum-btn" type="submit">Зарегистрироваться</button>
+              <a class="btn forum-btn-light" href="{{ url_for('index') }}">Вернуться на главную</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
