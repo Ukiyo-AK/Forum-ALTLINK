@@ -37,6 +37,7 @@
 
     .forum-navbar .nav-link {
       color: var(--brand-text);
+      font-weight: 600;
     }
 
     .forum-navbar .nav-link.active,
@@ -59,9 +60,19 @@
 
     .forum-search,
     .forum-form-control,
-    .forum-form-select {
+    .forum-form-select,
+    .forum-textarea {
       border-color: var(--brand-sand);
       background-color: rgba(255, 255, 255, 0.72);
+    }
+
+    .forum-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-left: auto;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .forum-btn {
@@ -91,12 +102,58 @@
       color: var(--brand-primary);
     }
 
+    .forum-tile-link,
+    .forum-tile-button {
+      min-height: 44px;
+      padding: 0.7rem 1rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(0, 140, 115, 0.16);
+      background: rgba(254, 250, 245, 0.96);
+      color: var(--brand-primary);
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 10px 24px rgba(0, 140, 115, 0.08);
+    }
+
+    .forum-tile-link:hover,
+    .forum-tile-link:focus,
+    .forum-tile-button:hover,
+    .forum-tile-button:focus {
+      background: var(--brand-mint);
+      color: var(--brand-primary);
+      border-color: rgba(0, 140, 115, 0.3);
+    }
+
+    .forum-profile-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-height: 44px;
+      padding: 0.45rem 0.9rem 0.45rem 0.5rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(0, 140, 115, 0.16);
+      background: rgba(254, 250, 245, 0.96);
+      color: var(--brand-primary);
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 10px 24px rgba(0, 140, 115, 0.08);
+    }
+
+    .forum-profile-link:hover,
+    .forum-profile-link:focus {
+      background: var(--brand-mint);
+      color: var(--brand-primary);
+      border-color: rgba(0, 140, 115, 0.3);
+    }
+
     .hero-banner,
     .panel-card,
     .topic-card,
     .profile-card,
     .account-card,
-    .member-card {
+    .member-card,
+    .message-card,
+    .compose-card {
       background: rgba(254, 250, 245, 0.94);
       border: 1px solid var(--brand-sand);
       box-shadow: 0 14px 34px rgba(0, 140, 115, 0.06);
@@ -120,7 +177,10 @@
     .profile-copy,
     .account-copy,
     .flash-copy,
-    .member-copy {
+    .member-copy,
+    .message-copy,
+    .message-content,
+    .topic-copy {
       color: var(--brand-text);
     }
 
@@ -129,7 +189,8 @@
     }
 
     .topic-card:hover,
-    .member-card:hover {
+    .member-card:hover,
+    .message-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 20px 40px rgba(0, 140, 115, 0.1);
     }
@@ -195,6 +256,16 @@
       background: var(--brand-mint);
     }
 
+    .avatar-nav {
+      width: 34px;
+      height: 34px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid rgba(0, 140, 115, 0.12);
+      background: var(--brand-mint);
+      flex-shrink: 0;
+    }
+
     .forum-footer {
       background: var(--brand-primary);
       color: var(--brand-ivory);
@@ -207,6 +278,20 @@
       display: block;
     }
 
+    .message-meta {
+      font-size: 0.9rem;
+      color: rgba(36, 88, 77, 0.72);
+    }
+
+    .message-content {
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    .topic-header-tag {
+      width: fit-content;
+    }
+
     .member-link,
     .text-link {
       color: var(--brand-primary);
@@ -216,6 +301,30 @@
     .member-link:hover,
     .text-link:hover {
       text-decoration: underline;
+    }
+
+    @media (max-width: 991.98px) {
+      .forum-top-actions {
+        margin-left: 0;
+        padding-top: 1rem;
+        width: 100%;
+        justify-content: stretch;
+      }
+
+      .forum-top-actions form {
+        width: 100%;
+      }
+
+      .forum-top-actions .forum-tile-link,
+      .forum-top-actions .forum-tile-button,
+      .forum-top-actions .forum-profile-link {
+        width: 100%;
+        text-align: center;
+      }
+
+      .forum-top-actions .forum-profile-link {
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -232,19 +341,27 @@
           <li class="nav-item">
             <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">Главная</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link {% if request.endpoint == 'register' %}active{% endif %}" href="{{ url_for('register') }}">Регистрация</a>
-          </li>
-          {% if current_user %}
-          <li class="nav-item">
-            <a class="nav-link {% if request.endpoint in ['current_profile', 'profile_by_nickname'] %}active{% endif %}" href="{{ url_for('current_profile') }}">Мой профиль</a>
-          </li>
-          {% endif %}
         </ul>
-        <form class="d-flex" method="get" action="{{ url_for('index') }}">
-          <input class="form-control forum-search me-2" type="search" name="q" value="{{ request.args.get('q', '') }}" placeholder="Поиск тем" aria-label="Поиск тем">
-          <button class="btn forum-btn" type="submit">Поиск</button>
-        </form>
+        <div class="forum-top-actions">
+          <form class="d-flex" method="get" action="{{ url_for('index') }}">
+            <input class="form-control forum-search me-2" type="search" name="q" value="{{ request.args.get('q', '') }}" placeholder="Поиск тем" aria-label="Поиск тем">
+            <button class="btn forum-btn" type="submit">Поиск</button>
+          </form>
+          <a class="forum-tile-link" href="https://altlink.online/" target="_blank" rel="noreferrer">Основной сайт</a>
+          {% if not current_user %}
+          <a class="forum-tile-link {% if request.endpoint == 'register' %}active{% endif %}" href="{{ url_for('register') }}">Регистрация</a>
+          <a class="forum-tile-link {% if request.endpoint == 'login' %}active{% endif %}" href="{{ url_for('login') }}">Вход</a>
+          {% endif %}
+          {% if current_user %}
+          <a class="forum-profile-link {% if request.endpoint in ['current_profile', 'profile_by_nickname'] %}active{% endif %}" href="{{ url_for('current_profile') }}">
+            <img class="avatar-nav" src="{{ url_for('media_file', filename=current_user.avatar_media_path) }}" alt="Аватар {{ current_user.nickname }}">
+            <span>{{ current_user.nickname }}</span>
+          </a>
+          <form method="post" action="{{ url_for('logout') }}">
+            <button class="forum-tile-button" type="submit">Выход</button>
+          </form>
+          {% endif %}
+        </div>
       </div>
     </div>
   </nav>

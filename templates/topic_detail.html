@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}{{ topic.title }} | Форум ALTLINK{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="panel-card rounded-4 p-4 mb-4">
+      <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+        <div>
+          <h1 class="h3 page-title mb-2">{{ topic.title }}</h1>
+          <div class="topic-copy">{{ topic.description }}</div>
+        </div>
+        <span class="badge topic-tag topic-header-tag">{{ topic.tag }}</span>
+      </div>
+      <div class="message-meta mt-3">Сообщений в теме: {{ topic.message_count }}</div>
+    </div>
+
+    {% if errors %}
+    <div class="alert forum-alert forum-alert-warning mb-3" role="alert">
+      <ul class="mb-0">
+        {% for error in errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {% if topic.messages %}
+      <div class="d-grid gap-3">
+        {% for message in topic.messages %}
+        <div class="message-card rounded-4 p-3">
+          <div class="d-flex gap-3 align-items-start">
+            <a href="{{ url_for('profile_by_nickname', nickname=message.author.nickname) }}">
+              <img class="avatar-sm" src="{{ url_for('media_file', filename=message.author.avatar_media_path) }}" alt="Аватар {{ message.author.nickname }}">
+            </a>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+                <div>
+                  <a class="member-link fw-semibold" href="{{ url_for('profile_by_nickname', nickname=message.author.nickname) }}">{{ message.author.nickname }}</a>
+                  {% if message.author.nickname == support_nickname %}
+                  <span class="badge profile-badge ms-2">Поддержка ALTLINK</span>
+                  {% else %}
+                  <span class="message-meta ms-2">{{ message.author.gender_label }}</span>
+                  {% endif %}
+                </div>
+                <div class="message-meta">{{ message.created_at.strftime("%d.%m.%Y %H:%M") }}</div>
+              </div>
+              <div class="message-content mt-3">{{ message.content }}</div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+    <div class="panel-card rounded-4 p-4">
+      <div class="topic-copy">Пока в этой теме нет сообщений. Можно начать обсуждение первым.</div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="col-lg-4">
+    <div class="compose-card rounded-4 p-4 mb-3">
+      <h2 class="h5 section-title mb-3">Написать в тему</h2>
+      {% if topic.slug == support_topic_slug %}
+      <div class="topic-copy mb-3">В этой теме после сообщения пользователя может автоматически ответить Поддержка ALTLINK на базе Gemini.</div>
+      {% endif %}
+      {% if current_user %}
+      <form method="post" class="d-grid gap-3">
+        <div class="message-meta">Вы пишете как <b>{{ current_user.nickname }}</b>.</div>
+        <div>
+          <label class="form-label" for="content">Сообщение</label>
+          <textarea class="form-control forum-textarea" id="content" name="content" rows="7" maxlength="4000" required>{{ draft_content }}</textarea>
+        </div>
+        <button class="btn forum-btn" type="submit">Опубликовать</button>
+      </form>
+      {% else %}
+      <div class="topic-copy mb-3">Писать сообщения могут только авторизованные пользователи.</div>
+      <div class="d-flex gap-2 flex-wrap">
+        <a class="btn forum-btn" href="{{ url_for('login', next=url_for('topic_detail', slug=topic.slug)) }}">Войти</a>
+        <a class="btn forum-btn-light" href="{{ url_for('register') }}">Регистрация</a>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="panel-card rounded-4 p-4">
+      <h2 class="h5 section-title mb-3">О теме</h2>
+      <div class="topic-copy mb-2">{{ topic.description }}</div>
+      <div class="message-meta">Раздел: {{ topic.tag }}</div>
+      <div class="message-meta mt-2">Создана: {{ topic.created_at.strftime("%d.%m.%Y %H:%M") }}</div>
+      <a class="btn btn-sm forum-btn-light mt-3" href="{{ url_for('index') }}">Назад к списку тем</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

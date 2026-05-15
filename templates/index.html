@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="hero-banner mb-4">
-  <img src="{{ url_for('media_file', filename='logo with title.png') }}" class="hero-media" alt="ALTLINK">
+  <img src="https://picsum.photos/1200/320" class="hero-media" alt="Случайный баннер ALTLINK">
 </div>
 
 <div class="row g-4">
@@ -14,7 +14,6 @@
         <h1 class="h3 mb-1 section-title">Темы форума</h1>
         <div class="small section-meta">Найдено тем: {{ topics|length }} | Сообщений: {{ total_posts }}</div>
       </div>
-      <a class="btn forum-btn" href="{{ url_for('register') }}">Создать аккаунт</a>
     </div>
 
     {% if query %}
@@ -29,12 +28,12 @@
         <div class="d-flex justify-content-between align-items-start">
           <div>
             <b>{{ topic.title }}</b>
-            <span class="badge topic-count">{{ topic.posts }}</span>
+            <span class="badge topic-count">{{ topic.message_count }}</span>
           </div>
           <span class="badge topic-tag">{{ topic.tag }}</span>
         </div>
         <div class="small mt-2 topic-description">{{ topic.description }}</div>
-        <button class="btn btn-sm forum-btn-light mt-3" type="button">Открыть</button>
+        <a class="btn btn-sm forum-btn-light mt-3" href="{{ url_for('topic_detail', slug=topic.slug) }}">Открыть</a>
       </div>
       {% endfor %}
     {% else %}
