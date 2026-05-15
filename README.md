@@ -11,21 +11,11 @@ python app.py
 
 Локал `http://127.0.0.1:5000`.
 
-## Надёжный запуск на Windows
-
-Если `python app.py` запускается не тем интерпретатором и пишет `No module named 'flask'`, используйте локальное окружение проекта:
-
 ```powershell
 .\.venv\Scripts\python.exe app.py
 ```
 
-Или так:
-
-```powershell
-.\run.ps1
-```
-
-## Что уже есть
+## Что имеется
 
 - Главная страница форума на `Flask`
 - Регистрация аккаунта с `nickname`, паролем, подтверждением пароля, полом и загрузкой аватарки
@@ -44,4 +34,4 @@ python app.py
 api_gemini_url=
 ```
 
-Базовый prompt для нейронки хранится в [gemini_prompt.json](C:/Users/konst/Documents/GitHub/Forum/gemini_prompt.json:1).
+Базовый промтик для нейронки хранится в [gemini_prompt.json]
